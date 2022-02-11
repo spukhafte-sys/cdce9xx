@@ -70,7 +70,7 @@ setup(
     #
     # This field corresponds to the "Home-Page" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#home-page-optional
-    url='https://github.com/pypa/spukhafte_cdce9xx',  # Optional
+    url='https://github.com/spukhafte-sys/cdce9xx',  # Optional
 
     # This should be your name or the name of the organization which owns the
     # project.
@@ -198,7 +198,7 @@ setup(
     # maintainers, and where to support the project financially. The key is
     # what's used to render the link text on PyPI.
     project_urls={  # Optional
-        'Bug Reports': 'https://github.com/pypa/spukhafte_cdce9xx/issues',
-        'Source': 'https://github.com/pypa/spukhafte_cdce9xx/',
+        'Bug Reports': 'https://github.com/spukhafte-sys/cdce9xx/issues',
+        'Source': 'https://github.com/spukhafte-sys/cdce9xx/',
     },
 )
