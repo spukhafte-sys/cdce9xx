@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
-"""Configure the CDCE913 PLL in the K15
+"""Command line tool to configure TI CDCE(L)9XX clock generators across an I2C bus
 
    Requirements
    python (>=3.5)
-   smbus (1.1.post2)
-   cdce9xx
+   smbus (>=1.1.post2)
+   Adafruit-PlatformDetect(>=3.19.4)
+   cdce9xx (>=0.1)
 """
 
 __version__ = '0.0'
 __author__ = 'Fred Fierling'
-__copyright__ = 'Copyright 2019, Spukhafte Systems Limited'
+__copyright__ = 'Copyright 2022 Spukhafte Systems Limited'
 
 import os
 import sys
@@ -46,10 +47,43 @@ GPS_BANDS = (
 def auto_int(x):
     return int(x, 0)
 
+def primes(n):
+    """Return a list of primes < n for n > 2."""
+
+    from itertools import compress
+    sieve = bytearray([True]) * (n//2)
+
+    for i in range(3, int(n**0.5)+1, 2):
+        if sieve[i//2]:
+            sieve[i*i//2::i] = bytearray((n-i*i-1)//(2*i)+1)
+
+    return [2, *compress(range(3, n, 2), sieve[1:])]
+
+def factorize(n):
+    """Return list of n's prime factors and their exponents."""
+    pf = []
+
+    for p in primes(int(n**0.5)+1):
+        if p*p > n:
+            break
+        count = 0
+        while not n%p:
+            n //= p
+            count += 1
+        if count > 0:
+            pf.append((p, count))
+
+    if n > 1:
+        pf.append((n, 1))
+
+    return pf
+
 def print_factors(prefix, product):
-    modf, whole = utilities.math.modf(product)
+    from math import modf
+
+    modf, whole = modf(product)
     out = ''
-    for b, e in utilities.factorize(int(whole)):
+    for b, e in factorize(int(whole)):
         if out is '':
             out += prefix
         else:
@@ -65,7 +99,7 @@ def print_factors(prefix, product):
 
     print(out, file=sys.stderr)
 
-def main(device=None):
+def main(device='_'):
     # Board-specific defaults
     # Policy here is to set unused dividers to zero (0Hz out)
     # and multiplex dividers straight to their respective outputs.
@@ -247,6 +281,7 @@ def main(device=None):
         max_pdiv = PLL.MAX_PDIV
 
     if args.v:
+        print('HW=%s' % HW.board.id)
         print_factors('FIN=', args.fin)
         
         if args.fout:
