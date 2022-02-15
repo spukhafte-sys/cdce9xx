@@ -45,10 +45,23 @@ GPS_BANDS = (
 
 # Functions
 def auto_int(x):
+    '''
+    Convert a string into an integer.
+
+    :param x: String to convert
+    :return: Integer in x
+    :rtype: Integer
+    '''
     return int(x, 0)
 
 def primes(n):
-    """Return a list of primes < n for n > 2."""
+    """
+    Return a list of primes < n and > 2.
+
+    :param n: Ceiling
+    :type n: Integer
+    :return: List of primes
+    """
 
     from itertools import compress
     sieve = bytearray([True]) * (n//2)
@@ -60,7 +73,14 @@ def primes(n):
     return [2, *compress(range(3, n, 2), sieve[1:])]
 
 def factorize(n):
-    """Return list of n's prime factors and their exponents."""
+    """
+    Return list of n's prime factors and their exponents.
+
+    :param n: Number to factor
+    :type n: Integer
+    :return: List of prime factors and exponents
+    :rtype: ((prime, exponent), (prime, exponent),...)
+    """
     pf = []
 
     for p in primes(int(n**0.5)+1):
@@ -79,7 +99,12 @@ def factorize(n):
     return pf
 
 def print_factors(prefix, product):
-    from math import modf
+    """
+    Pretty print factors and their corresponding exponents.
+
+    :param prefix: String prefixed to output
+    :param product: List of (factor, exponent) to be printed
+    """
 
     modf, whole = modf(product)
     out = ''
@@ -165,7 +190,7 @@ def main(device='_'):
         VALID_BUSES = (0,1,2)
         DEF_BUS = 1 if model == 'K25' else 2
     elif HW.board.id.startswith('RASPBERRY_PI'):
-        VALID_BUSES = (0,1,2)
+        VALID_BUSES = (1,2)
         DEF_BUS = 1
     elif HW.board.id == 'BEAGLEBONE_AI':
         VALID_BUSES = (0,3)
@@ -281,6 +306,7 @@ def main(device='_'):
         max_pdiv = PLL.MAX_PDIV
 
     if args.v:
+        from math import modf
         print('HW=%s' % HW.board.id)
         print_factors('FIN=', args.fin)
         
