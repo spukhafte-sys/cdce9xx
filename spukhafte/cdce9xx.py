@@ -132,7 +132,7 @@ class PLL:
         """Return true if f is valid fout.
 
         :param f: Frequency in Hz
-        :param pdiv10b True if PLL divider is 10-bits
+        :param pdiv10b: True if PLL divider is 10-bits
         """
     
         if pdiv10b:
