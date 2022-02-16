@@ -15,10 +15,10 @@ from random import randrange
 from math import ceil
 #from datetime import datetime
 
-TEST_DATA_FILENAME = 'test/.k1x_config.json'
-TEST_ENV = { 'PYTHONPATH': './test' }  # Path that finds mock smbus first
-K15_CMD = './k15_config'
-K16_CMD = './k16_config'
+TEST_DATA_FILENAME = 'tests/.k1x_config.json'
+TEST_ENV = { 'PYTHONPATH': './tests' }  # Path that finds mock smbus first
+K15_CMD = './tests/k15_config'
+K16_CMD = './tests/k16_config'
 
 STIMULI = [
           # [stdin, [cmd, *opts, ]] ; stdin is null JSON because test env doesn't look like a tty
@@ -46,7 +46,7 @@ class Test_k1x_config(unittest.TestCase):
     def setup(self):
         pass
 
-    @unittest.skip("This test only run to generate test data")
+    @unittest.skip("Run this test only to generate test data")
     def test_00_k1x_config_default(self):
        #import pdb; pdb.set_trace()
         with open(TEST_DATA_FILENAME, 'w') as f:

@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """Classes for Texas Instruments CDCE9xx clock generators and CDC3RL02 clock buffers.
+
+   [1] Texas Instruments CDCE(L)9xx clock generators data sheet
 """
 
 __version__ = '0.0'
@@ -11,11 +13,19 @@ import json
 import math
 from collections import OrderedDict
 
-# Constants ===================
+# Constants
 
-# Functions ===================
+# Functions
 def harmonic_in_band(fvco, bands):
-    '''Returns description of band if fvco is within band, otherwise None.'''
+    """Get description of band containing fvco frequency
+
+    :param fvco: frequency
+    :type fvco: int or float
+    :param bands: Tuple of tuples describing each band
+    :type bands: ( (lo_freq, hi_freq, description), ()...)
+    :return: Description of the band containing fvco, otherwise None
+    :rtype: str
+    """
 
     for lower, upper, desc in bands:
         if int(lower/fvco) != int(upper/fvco):
@@ -23,9 +33,10 @@ def harmonic_in_band(fvco, bands):
     return None
 
 def print_json(names_values):
-    '''Prints names_values as JSON.
-    :param names_values: A dictionary of names: values
-    '''
+    """Prints names_values as JSON.
+
+    :param names_values: A dictionary with name keys and values
+    """
 
     print('{')
 
@@ -38,14 +49,14 @@ def print_json(names_values):
     print('}')
     return
 
-# Classes ======================
+# Classes
 class Spec:
-    '''Class for bit field specification.
+    """Class for bit field specification.
 
     :param reg: byte offset of register within device
     :param offset: bit offset of field within register
     :param size: size of field in bits
-    '''
+    """
 
     def __init__(self, a, o, s):
         self.reg = a    # byte offset of register
@@ -58,13 +69,13 @@ class Spec:
     __repr__ = __str__
 
 class Field:
-    '''Class for bit fields.
+    """Bit field class.
 
     :param r_seq: priority of field during batch reads (0: read-protected; 1: highest)
     :param w_seq: priority of field during batch writes (0: write-protected; 1: highest)
     :param d_val: device default value
     :param specs: field specifications
-    '''
+    """
 
     def __init__(self, r, w, d, s):
         self.r_seq = r  # read sequence; 1:first; 0:read-protected
@@ -78,22 +89,24 @@ class Field:
     __repr__ = __str__
 
 class CDC3RL02:
-    '''Class for a CDC3RL02 clock buffer.'''
+    """Class for a CDC3RL02 clock buffer.
+    """
 
     # CDC3RL02 Specifications
     MIN_CLK = 10e6
     MAX_CLK = 52e6
 
 class PLL:
-    '''Class for a CDCE9xx PLL.'''
+    """Class for a CDCE(L)9xx phase-lock loop.
+    """
 
     # PLL Constants
     VCO_RANGE = (
-            (80e6, 125e6),
-            (125e6, 150e6),
-            (150e6, 175e6),
-            (175e6, 230e6)
-        )
+        (80e6, 125e6),
+        (125e6, 150e6),
+        (150e6, 175e6),
+        (175e6, 230e6)
+    )
     
     MIN_VCO = VCO_RANGE[0][0]
     MAX_VCO = VCO_RANGE[3][1]
@@ -105,28 +118,22 @@ class PLL:
     
     # Register field limits
     MIN_PDIV = 1
-    MAX_PDIV = 127
-    MAX_PDIV1 = 1023
+    MAX_PDIV = 127  # 7-bit
+    MAX_PDIV1 = 1023  # 10-bit
     MIN_P = 0
     MAX_P = 7
     MIN_Q = 16
     MAX_Q = 63
     MIN_R = 0
     MAX_R = 511
-    
-    FIELD_MIN = {
-            'PDIV1': 1,
-            'PDIV2': 1,
-            'PDIV3': 1,
-            'Q': 16,
-            }
 
     @classmethod
     def fout_valid(cls, f, pdiv10b=False):
-        '''Return true if f is valid fout.
+        """Return true if f is valid fout.
+
         :param f: Frequency in Hz
         :param pdiv10b True if PLL divider is 10-bits
-        '''
+        """
     
         if pdiv10b:
             pdiv = cls.MAX_PDIV1
@@ -140,11 +147,11 @@ class PLL:
 
     @classmethod
     def nmp_valid(cls, nmp, pdiv10):
-        '''Returns true for a valid combination of N, M, and P values in the list nmp.
+        """Returns true for a valid combination of N, M, and P values in the list nmp.
 
         :param nmp: list of (N, M, P)
         :param pdiv10: boolean true for 10-bit PDIV
-        '''
+        """
 
         n, m, p = nmp
         max_pdiv = cls.MAX_PDIV1 if pdiv10 else cls.MAX_PDIV
@@ -159,8 +166,12 @@ class PLL:
     def pdivs(cls, f, max_pdiv=MAX_PDIV):
         """Yield the pdivs, in descending order, that could generate frequency f
         from the VCO's frequency range.
+
         :param f: frequency in Hz
-        :param max_pdiv:
+        :param max_pdiv: Starting PDIV
+        :type max_pdiv: int
+        :return: PDIV value
+        :rtype: int
         """
     
         i = min(max_pdiv, math.floor(cls.VCO_RANGE[3][1]/f))
@@ -171,7 +182,12 @@ class PLL:
     
     @classmethod
     def vco_range(cls, f):
-        """Return index of highest VCO_RANGE that includes frequency f."""
+        """Return index of highest VCO_RANGE that includes frequency f.
+
+        :param f: Frequency
+        :return: Index
+        :rtype: int
+        """
 
         i = 4
         while i:
@@ -184,24 +200,33 @@ class PLL:
 
     @classmethod
     def find_n_m_pdiv(cls, fin, fout, max_pdiv, exclude=(), debug=0):
-        """Find integer PLL values pdiv, n and m.
+        """Find PLL values pdiv, n and m given fin and fout.
+    
+        Using the equations in section 9.2.2.2 of [1], calculate the accuracy of
+        fout for all valid combinations of pdiv, n and m.
+        
+        :math: fout = (fin / pdiv) * (n / m)
+        
+        :math: fvco = fin * n / m
+
+        In the outer loop PDIV is decremented starting from the maximum possible PDIV. For each
+        PDIV every frequency generated by valid combinations M and N is scanned, to find the best
+        solution. The search is quit if a perfect solution (with zero error) is found.
+
+        Solutions that result in a VCO frequency with harmonics that fall within a band
+        that could interfere with nearby circuitry (like GPS receivers) can be skipped by
+        specifying the exclude parameter.
     
         :param fin: PLL input frequency reference (Hz)
         :param fout: PLL output frequency (Hz)
         :param max_pdiv:
-        :param exclude: excluded frequencies
+        :param exclude: excluded bands
+        :type exclude: A list of tuples consisting of (lo_freq, hi_freq, label)
         :param debug: Debug level
     
-        :return: List consisting of
-            n, m, pdiv -- values needed to compute p, q, r register fields
-            error      -- frequency error (Hz)
+        :return: (n, m, pdiv, error) the values needed to compute p, q, r register fields and error
+        :rtype: (int, int, int, float)
         """
-    
-        # CDCE9xx formula from section 9.2.2.2 of CDCE913 data sheet
-        #
-        # fout = (fin / pdiv) * (n / m)
-        #
-        # fvco = fin * n / m
     
         best = (None, None, None, None, None)
         min_error = fout
@@ -232,7 +257,6 @@ class PLL:
                 # Calculate actual output frequency and error
                 error = fin * n / (pdiv * m) - fout
                 abs_error = abs(error)
-                #if args.d:
     
                 if error == 0:
                     return(n, m, pdiv, fvco, 0)
@@ -248,7 +272,13 @@ class PLL:
     
     @classmethod
     def calculate_p_q_r(cls, n, m):
-        """Calculate values of p, q, r fields used in CDCE9xx registers."""
+        """Calculate values of p, q, r fields used in CDCE9xx registers.
+
+        :param n: N in section 9.2.2.2 of [1]
+        :param m: M
+        :return: (P, Q, R)
+        :rtype: (int, int, int)
+        """
 
         p = 4 - int(math.log2(n/m))
         n_prime = n * 2**p
@@ -265,13 +295,22 @@ class PLL:
 
     @classmethod
     def config_fields(cls, n_plls):
+        """Yield all possible pll indices
+        """
         for i in range(1, n_plls + 1):
             for j in cls.register(i):
                 yield j
 
     @classmethod
     def calculate_m(cls, n, p, q, r):
-        '''Calculate and return m from n, p, q, r register values.'''
+        """Calculate and return m from n, p, q, r register values.
+
+        :param n: N in section 9.2.2.2 of [1]
+        :param p: P "
+        :param q: Q
+        :param r: R
+        :return: M
+        """
 
         # Don't check maximum limits as these fields are limited by register size
         if  cls.MIN_Q <= q:
@@ -282,7 +321,13 @@ class PLL:
 
     @classmethod
     def calculate_fvco_fout(cls, fin, n, m, pdiv):
-        '''Calculate and return fvco and fout from fin, N, M, PDIV.'''
+        """Calculate and return fvco and fout from fin, N, M, PDIV.
+
+        :param fin: VCO input frequency
+        :param n: N in section 9.2.2.2 of [1]
+        :return: FVCO and FOUT in section 9.2.2.2 of [1]
+        :rtype: (float, float)
+        """
 
         if n >= m:
             # Check fvco
@@ -304,7 +349,8 @@ class PLL:
             return None
 
     def register(pll_n):
-        """Yield fields in PLL with index pll_n."""
+        """Yield fields in PLL with index pll_n.
+        """
 
         p_base = pll_n * 0x10
         m_base = pll_n * 2
@@ -374,7 +420,8 @@ class PLL:
             yield i
 
 class CDCE9xx:
-    '''Class for a Texas Instruments CDCE9xx Clock Generator.'''
+    """Class for a Texas Instruments CDCE(L)9xx Clock Generator.
+    """
 
     DEF_PLL = 1
     DEF_PDIV = 1
@@ -430,13 +477,24 @@ class CDCE9xx:
     # Functions
     @classmethod
     def def_addr(cls, n_plls):
-        """Return base address of a CDCE9xx with n_plls."""
+        """Return base address of a CDCE9xx with n_plls phase-lock loops.
+
+        :param n_plls: Number of phase-locked loops in device
+        :type n_plls: int
+        :return: Default I2C address of device
+        :rtype: int
+        """
 
         return cls.BASE_ADDR + (((n_plls - 1) & 2) << 2) + (n_plls & 1)
 
     @classmethod
     def fin_valid(cls, f):
-        '''Test if f is valid input frequency.'''
+        """Test if f is valid input frequency.
+
+        :param f: frequency
+        :return: True if valid, otherwise False
+        :rtype: bool
+        """
     
         if cls.MIN_FIN <= f <= cls.MAX_FIN:
             return True
@@ -444,7 +502,8 @@ class CDCE9xx:
         return False
     
     def __init__(self, n_plls, port, addr):
-        '''Construct a clock generator object.'''
+        """Construct a clock generator object.
+        """
 
         # Build config_fields common to all PLLs
         self.config_fields = OrderedDict(CDCE9xx.FIELDS)
@@ -458,8 +517,14 @@ class CDCE9xx:
         self.addr = addr  # address of device on bus
 
     def set_pll_pdiv(self, pll_n, n, m, vco, pdiv_n, pdiv, state_n=0, debug=0):
-        '''Given fin, program PLL and PDIV to generate fout.
-        Return (frequency error) on success else None.'''
+        """Given fin, program PLL and PDIV to generate fout.
+        Return (frequency error) on success else None.
+
+        :param pll_n: number of PLLs
+        :param n: N from section 9.2.2.2 of [1]
+        :param m: M from section 9.2.2.2 of [1]
+        :param pdiv_n: M from section 9.2.2.2 of [1]
+        """
 
         # Calculate and validate register values
         p = None
@@ -498,10 +563,9 @@ class CDCE9xx:
     def get(self, name):
         """Get value of field.
 
-        Arguments:
-            name     -- string containing field's name
-
-        Returns: value of field
+        :param name: string containing field's name
+        :return: value of field
+        :rtype: int
         """
 
         value = 0
@@ -510,13 +574,14 @@ class CDCE9xx:
 
             # Get PLL register
             value = (value << spec.size) | (mask & (self.port.read_byte_data(
-                                                        self.addr,
-                                                        self.BYTE_OP|spec.reg) >> spec.offset)
-                                           )
+                    self.addr,
+                    self.BYTE_OP|spec.reg) >> spec.offset)
+                )
         return value
 
     def get_fields(self, names, debug=0):
-        '''Returns a list of (field_name, value) tuples from PLL.'''
+        """Returns a list of (field_name, value) tuples from device.
+        """
 
         # Build a list of readable (name, value) tuples
         work = []
@@ -545,8 +610,10 @@ class CDCE9xx:
         return result
 
     def set_fields(self, names_values, debug=0):
-        '''Updates valid fields using (name, value) tuples in a tuple or list.
-        Returns number of fields processed.'''
+        """Updates valid fields using (name, value) tuples in a tuple or list.
+
+        :return: Number of fields processed
+        """
 
         work = []
         # Build list of valid names
@@ -576,9 +643,8 @@ class CDCE9xx:
     def set(self, name, value):
         """Set field with name to value.
 
-        Arguments:
-            name     -- string containing field's name
-            value    -- value to write to field
+        :param name: string containing field's name
+        :param value: value to write to field
         """
 
         # write least significant bits first
@@ -588,7 +654,8 @@ class CDCE9xx:
         return
 
     def poke(self, spec, value):
-        '''Peel LS bits out of value into bit field defined by spec.'''
+        """Peel LS bits out of value into bit field defined by spec.
+        """
 
         mask = (1 << spec.size) - 1
 
@@ -604,7 +671,8 @@ class CDCE9xx:
         return value >> spec.size 
 
     def dump(self, zeroes):
-        '''Dump device configuration as JSON.'''
+        """Dump device configuration as JSON.
+        """
 
         names_values = self.get_fields(list(self.config_fields))
 
@@ -615,7 +683,8 @@ class CDCE9xx:
         return
 
     def load(self, fp):
-        '''Load device configuration from JSON.'''
+        """Load device configuration from JSON.
+        """
 
         j = json.load(fp)
         names_values = list(j.items())
@@ -623,7 +692,8 @@ class CDCE9xx:
         return
 
     def write_eeprom(self):
-        """Write current configuration to EEPROM, wait for completion."""
+        """Write current configuration to EEPROM, wait for completion.
+        """
 
         self.set('EEWRITE', 1)
 
@@ -638,7 +708,8 @@ class CDCE9xx:
         return False
 
     def get_nmp(self, pll_n=1, pdiv_n=1, state_n=0):
-        """Return N, M, P of pll_n, pdiv_n, state in a list."""
+        """Return N, M, P of pll_n, pdiv_n, state in a list.
+        """
 
         n = self.get('PLL%d_%dN' % (pll_n, state_n))
 
@@ -652,7 +723,8 @@ class CDCE9xx:
         )
 
     def factory_default(self):
-        """Return board defaults for all fields."""
+        """Return board defaults for all fields.
+        """
 
         return self.set_fields([(n, self.config_fields[n].d_val) for n in self.config_fields])
 

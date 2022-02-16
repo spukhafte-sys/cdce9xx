@@ -16,6 +16,7 @@ import os
 import sys
 import argparse
 
+from math import modf
 from smbus import SMBus
 
 from spukhafte.cdce9xx import harmonic_in_band, CDCE9xx, PLL
@@ -45,22 +46,21 @@ GPS_BANDS = (
 
 # Functions
 def auto_int(x):
-    '''
-    Convert a string into an integer.
+    """Convert a string into an integer.
 
     :param x: String to convert
-    :return: Integer in x
-    :rtype: Integer
-    '''
+    :return: value in x
+    :rtype: int
+    """
     return int(x, 0)
 
 def primes(n):
-    """
-    Return a list of primes < n and > 2.
+    """Return a list of primes < n and > 2.
 
     :param n: Ceiling
-    :type n: Integer
-    :return: List of primes
+    :type n: int
+    :return: primes
+    :rtype: list
     """
 
     from itertools import compress
@@ -73,13 +73,12 @@ def primes(n):
     return [2, *compress(range(3, n, 2), sieve[1:])]
 
 def factorize(n):
-    """
-    Return list of n's prime factors and their exponents.
+    """Return tuples of n's prime factors and their exponents.
 
     :param n: Number to factor
-    :type n: Integer
-    :return: List of prime factors and exponents
-    :rtype: ((prime, exponent), (prime, exponent),...)
+    :type n: int
+    :return: tuples of prime factors and exponents
+    :rtype: tuple of tuples
     """
     pf = []
 
@@ -99,16 +98,16 @@ def factorize(n):
     return pf
 
 def print_factors(prefix, product):
-    """
-    Pretty print factors and their corresponding exponents.
+    """Pretty-print factors of a product and their corresponding exponents.
 
     :param prefix: String prefixed to output
     :param product: List of (factor, exponent) to be printed
+    :type product: float
     """
 
-    modf, whole = modf(product)
+    f, i = modf(product)
     out = ''
-    for b, e in factorize(int(whole)):
+    for b, e in factorize(int(i)):
         if out is '':
             out += prefix
         else:
@@ -119,20 +118,16 @@ def print_factors(prefix, product):
         else:
             out += "%d^%d" % (b, e)
 
-    if modf:
-        out += '%+.4f' % modf
+    if f:
+        out += '%+.4f' % f
 
     print(out, file=sys.stderr)
 
 def main(device='_'):
-    # Board-specific defaults
-    # Policy here is to set unused dividers to zero (0Hz out)
-    # and multiplex dividers straight to their respective outputs.
-    # Eg, PDIV2 -> Y2
-    # VALID_PLLS: Valid PLL indices (-p arguments); 0 means null PLL, used for setting only PDIV
-    # DEF_PDIV_MAP: List that maps PLL index to index of its default PDIV; same len() as VALID_PLLS
-    # VALID_PDIVS: PDIV indices (-d arguments) connected on the board
+    """Command line tool for configuring clock generators connected to local system on an I2C bus.
+    """
 
+    # Detect and set-up for clock generators in specific products
     vendor, model = (device.upper()).split('_')
     if model.startswith('K'):
         if model == 'K15' or model == 'K25':
@@ -183,7 +178,7 @@ def main(device='_'):
         DEF_PDIV_MAP = (1, 1, 1)
         VALID_PDIVS = (1, 2, 3)  # R2: Y2 connects to a test point
 
-    # Environment-specific defaults
+    # Detect system hardware and software
     HW = Detector()
 
     if HW.board.id == 'BEAGLEBONE_BLACK':
@@ -215,7 +210,7 @@ def main(device='_'):
     if var in os.environ:
         DEF_FIN = float(os.environ[var])
 
-# Mainline ==========================
+    # Parse arguments
     parser = argparse.ArgumentParser(
         description=("configure %s's PLL" % model),
         epilog='no arguments: list PLL1 configuration')
@@ -306,7 +301,6 @@ def main(device='_'):
         max_pdiv = PLL.MAX_PDIV
 
     if args.v:
-        from math import modf
         print('HW=%s' % HW.board.id)
         print_factors('FIN=', args.fin)
         
@@ -407,12 +401,18 @@ def main(device='_'):
     return(SUCCESS)
 
 def k15():
+    """Configure Spukhafte K15
+    """
     main(device='ssl_k15')
 
 def k16():
+    """Configure Spukhafte K16
+    """
     main(device='ssl_k16')
 
 def k25():
+    """Configure Spukhafte K25
+    """
     main(device='ssl_k25')
 
 if __name__ == "__main__":

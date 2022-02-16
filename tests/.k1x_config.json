@@ -1,0 +1,159 @@
+[
+ [
+  "{}",
+  [
+   "./tests/k15_config",
+   "-h"
+  ],
+  "usage: k15_config [-h] [-nmp N M PDIV] [-a ADDR] [-b {0,3}] [-d {1,3}] [-fin FIN] [-g] [-i FILE] [-j] [-k] [-p {0,1}] [-r] [-s {0,1}] [-w] [-v] [-z] [FOUT] configure K15's PLL positional arguments: FOUT output frequency (Hz) optional arguments: -h, --help show this help message and exit -nmp N M PDIV where FOUT = N/M * FIN/PDIV -a ADDR I2C address of CDCE913 (default=0x65) -b {0,3} I2C bus number (default=3) -d {1,3} target PDIV index -fin FIN input frequency Xin/CLK, (default=30.72 MHz) -g allow VCO harmonics in GPS bands -i FILE file containing config JSON -j output configuration in JSON -k solve for a ten bit divider -p {0,1} target PLL index (default=1, 0: null device) -r reset to factory default -s {0,1} target PLL state, (default=0) -w write EEPROM -v verbosity level -z dump zero value config JSON no arguments: list PLL1 configuration",
+  ""
+ ],
+ [
+  "{}",
+  [
+   "./tests/k15_config",
+   "-r"
+  ],
+  "",
+  "FIN=3.072e+07 PLL1_0: N=0004 M=001 PDIV1=0001 FVCO=1.229e+08 FOUT=122880000"
+ ],
+ [
+  "{}",
+  [
+   "./tests/k15_config",
+   "5e6"
+  ],
+  "",
+  "FIN=3.072e+07 PLL1_0: N=2875 M=384 PDIV1=0046 FVCO=2.300e+08 FOUT=5000000"
+ ],
+ [
+  "{}",
+  [
+   "./tests/k15_config",
+   "-d2",
+   "1e7"
+  ],
+  "",
+  "usage: k15_config [-h] [-nmp N M PDIV] [-a ADDR] [-b {0,3}] [-d {1,3}] [-fin FIN] [-g] [-i FILE] [-j] [-k] [-p {0,1}] [-r] [-s {0,1}] [-w] [-v] [-z] [FOUT] k15_config: error: argument -d: invalid choice: 2 (choose from 1, 3)"
+ ],
+ [
+  "{}",
+  [
+   "./tests/k15_config",
+   "-jz"
+  ],
+  "{ \"E_EL\" : 0, \"RID\" : 0, \"VID\" : 1, \"EEPIP\" : 0, \"EELOCK\" : 0, \"PWDN\" : 0, \"INCLK\" : 0, \"SLAVE_ADDR\" : 0, \"M1\" : 1, \"SPICON\" : 0, \"Y1_ST1\" : 3, \"Y1_ST0\" : 1, \"PDIV1\" : 1, \"Y1_0\" : 0, \"Y1_1\" : 1, \"Y1_2\" : 0, \"Y1_3\" : 0, \"Y1_4\" : 0, \"Y1_5\" : 0, \"Y1_6\" : 0, \"Y1_7\" : 0, \"XCSEL\" : 10, \"BCOUNT\" : 80, \"EEWRITE\" : 0, \"SCC1_7\" : 0, \"SCC1_6\" : 0, \"SCC1_5\" : 0, \"SCC1_4\" : 0, \"SCC1_3\" : 0, \"SCC1_2\" : 0, \"SCC1_1\" : 0, \"SCC1_0\" : 0, \"FS1_0\" : 0, \"FS1_1\" : 0, \"FS1_2\" : 0, \"FS1_3\" : 0, \"FS1_4\" : 0, \"FS1_5\" : 0, \"FS1_6\" : 0, \"FS1_7\" : 0, \"MUX1\" : 1, \"M2\" : 1, \"M3\" : 2, \"Y2Y3_ST1\" : 3, \"Y2Y3_ST0\" : 1, \"Y2Y3_0\" : 0, \"Y2Y3_1\" : 1, \"Y2Y3_2\" : 0, \"Y2Y3_3\" : 0, \"Y2Y3_4\" : 0, \"Y2Y3_5\" : 0, \"Y2Y3_6\" : 0, \"Y2Y3_7\" : 0, \"SCC1DC\" : 0, \"PDIV2\" : 1, \"PDIV3\" : 1, \"PLL1_0N\" : 4, \"PLL1_0R\" : 0, \"PLL1_0Q\" : 16, \"PLL1_0P\" : 2, \"VCO1_0_RANGE\": 0, \"PLL1_1N\" : 4, \"PLL1_1R\" : 0, \"PLL1_1Q\" : 16, \"PLL1_1P\" : 2, \"VCO1_1_RANGE\": 0 }",
+  "FIN=3.072e+07 PLL1_0: N=0004 M=001 PDIV1=0001 FVCO=1.229e+08 FOUT=122880000"
+ ],
+ [
+  "{}",
+  [
+   "./tests/k15_config",
+   "-s1"
+  ],
+  "",
+  "FIN=3.072e+07 PLL1_1: N=0004 M=001 PDIV1=0001 FVCO=1.229e+08 FOUT=122880000"
+ ],
+ [
+  "{}",
+  [
+   "./tests/k15_config",
+   "-p0"
+  ],
+  "",
+  "usage: k15_config [-h] [-nmp N M PDIV] [-a ADDR] [-b {0,3}] [-d {1,3}] [-fin FIN] [-g] [-i FILE] [-j] [-k] [-p {0,1}] [-r] [-s {0,1}] [-w] [-v] [-z] [FOUT] k15_config: error: can't read PLL0"
+ ],
+ [
+  "{}",
+  [
+   "./tests/k15_config",
+   "-v"
+  ],
+  "",
+  "Traceback (most recent call last): File \"./tests/k15_config\", line 10, in <module> sys.exit(k15()) File \"/usr/local/lib/python3.7/dist-packages/spukhafte/bin/config.py\", line 356, in k15 main(model='k15') File \"/usr/local/lib/python3.7/dist-packages/spukhafte/bin/config.py\", line 257, in main print_factors('FIN=', args.fin) File \"/usr/local/lib/python3.7/dist-packages/spukhafte/bin/config.py\", line 50, in print_factors modf, whole = utilities.math.modf(product) NameError: name 'utilities' is not defined"
+ ],
+ [
+  "{}",
+  [
+   "./tests/k15_config",
+   "-nmp",
+   "2875",
+   "384",
+   "46"
+  ],
+  "",
+  "FIN=3.072e+07 PLL1_0: N=2875 M=384 PDIV1=0046 FVCO=2.300e+08 FOUT=5000000"
+ ],
+ [
+  "{\"PDIV2\": 46}",
+  [
+   "./tests/k15_config",
+   "-j"
+  ],
+  "{ \"VID\" : 1, \"M1\" : 1, \"Y1_ST1\" : 3, \"Y1_ST0\" : 1, \"PDIV1\" : 1, \"Y1_1\" : 1, \"XCSEL\" : 10, \"BCOUNT\" : 80, \"MUX1\" : 1, \"M2\" : 1, \"M3\" : 2, \"Y2Y3_ST1\" : 3, \"Y2Y3_ST0\" : 1, \"Y2Y3_1\" : 1, \"PDIV2\" : 46, \"PDIV3\" : 1, \"PLL1_0N\" : 4, \"PLL1_0Q\" : 16, \"PLL1_0P\" : 2, \"PLL1_1N\" : 4, \"PLL1_1Q\" : 16, \"PLL1_1P\" : 2 }",
+  "FIN=3.072e+07 PLL1_0: N=0004 M=001 PDIV1=0001 FVCO=1.229e+08 FOUT=122880000"
+ ],
+ [
+  "{}",
+  [
+   "./tests/k15_config",
+   "-vw"
+  ],
+  "",
+  "Traceback (most recent call last): File \"./tests/k15_config\", line 10, in <module> sys.exit(k15()) File \"/usr/local/lib/python3.7/dist-packages/spukhafte/bin/config.py\", line 356, in k15 main(model='k15') File \"/usr/local/lib/python3.7/dist-packages/spukhafte/bin/config.py\", line 257, in main print_factors('FIN=', args.fin) File \"/usr/local/lib/python3.7/dist-packages/spukhafte/bin/config.py\", line 50, in print_factors modf, whole = utilities.math.modf(product) NameError: name 'utilities' is not defined"
+ ],
+ [
+  "{}",
+  [
+   "./tests/k16_config",
+   "-h"
+  ],
+  "usage: k16_config [-h] [-nmp N M PDIV] [-a ADDR] [-b {0,3}] [-d {1,3,4,5,7}] [-fin FIN] [-g] [-i FILE] [-j] [-k] [-p {0,1,2,3}] [-r] [-s {0,1}] [-w] [-v] [-z] [FOUT] configure K16's PLL positional arguments: FOUT output frequency (Hz) optional arguments: -h, --help show this help message and exit -nmp N M PDIV where FOUT = N/M * FIN/PDIV -a ADDR I2C address of CDCE937 (default=0x6d) -b {0,3} I2C bus number (default=3) -d {1,3,4,5,7} target PDIV index -fin FIN input frequency Xin/CLK, (default=27.00 MHz) -g allow VCO harmonics in GPS bands -i FILE file containing config JSON -j output configuration in JSON -k solve for a ten bit divider -p {0,1,2,3} target PLL index (default=1, 0: null device) -r reset to factory default -s {0,1} target PLL state, (default=0) -w write EEPROM -v verbosity level -z dump zero value config JSON no arguments: list PLL1 configuration",
+  ""
+ ],
+ [
+  "{}",
+  [
+   "./tests/k16_config",
+   "-r"
+  ],
+  "",
+  "FIN=2.700e+07 PLL1_0: N=0004 M=001 PDIV1=0000 FVCO=0.000e+00 FOUT=0"
+ ],
+ [
+  "{}",
+  [
+   "./tests/k16_config",
+   "1e7"
+  ],
+  "",
+  "FIN=2.700e+07 PLL1_0: N=3910 M=459 PDIV1=0023 FVCO=2.300e+08 FOUT=10000000"
+ ],
+ [
+  "{}",
+  [
+   "./tests/k16_config",
+   "-jz"
+  ],
+  "{ \"E_EL\" : 0, \"RID\" : 0, \"VID\" : 1, \"EEPIP\" : 0, \"EELOCK\" : 0, \"PWDN\" : 0, \"INCLK\" : 0, \"SLAVE_ADDR\" : 0, \"M1\" : 1, \"SPICON\" : 0, \"Y1_ST1\" : 3, \"Y1_ST0\" : 1, \"PDIV1\" : 1, \"Y1_0\" : 0, \"Y1_1\" : 1, \"Y1_2\" : 0, \"Y1_3\" : 0, \"Y1_4\" : 0, \"Y1_5\" : 0, \"Y1_6\" : 0, \"Y1_7\" : 0, \"XCSEL\" : 10, \"BCOUNT\" : 80, \"EEWRITE\" : 0, \"SCC1_7\" : 0, \"SCC1_6\" : 0, \"SCC1_5\" : 0, \"SCC1_4\" : 0, \"SCC1_3\" : 0, \"SCC1_2\" : 0, \"SCC1_1\" : 0, \"SCC1_0\" : 0, \"FS1_0\" : 0, \"FS1_1\" : 0, \"FS1_2\" : 0, \"FS1_3\" : 0, \"FS1_4\" : 0, \"FS1_5\" : 0, \"FS1_6\" : 0, \"FS1_7\" : 0, \"MUX1\" : 1, \"M2\" : 1, \"M3\" : 2, \"Y2Y3_ST1\" : 3, \"Y2Y3_ST0\" : 1, \"Y2Y3_0\" : 0, \"Y2Y3_1\" : 1, \"Y2Y3_2\" : 0, \"Y2Y3_3\" : 0, \"Y2Y3_4\" : 0, \"Y2Y3_5\" : 0, \"Y2Y3_6\" : 0, \"Y2Y3_7\" : 0, \"SCC1DC\" : 0, \"PDIV2\" : 1, \"PDIV3\" : 1, \"PLL1_0N\" : 4, \"PLL1_0R\" : 0, \"PLL1_0Q\" : 16, \"PLL1_0P\" : 2, \"VCO1_0_RANGE\": 0, \"PLL1_1N\" : 4, \"PLL1_1R\" : 0, \"PLL1_1Q\" : 16, \"PLL1_1P\" : 2, \"VCO1_1_RANGE\": 0, \"SCC2_7\" : 0, \"SCC2_6\" : 0, \"SCC2_5\" : 0, \"SCC2_4\" : 0, \"SCC2_3\" : 0, \"SCC2_2\" : 0, \"SCC2_1\" : 0, \"SCC2_0\" : 0, \"FS2_0\" : 0, \"FS2_1\" : 0, \"FS2_2\" : 0, \"FS2_3\" : 0, \"FS2_4\" : 0, \"FS2_5\" : 0, \"FS2_6\" : 0, \"FS2_7\" : 0, \"MUX2\" : 1, \"M4\" : 1, \"M5\" : 2, \"Y4Y5_ST1\" : 3, \"Y4Y5_ST0\" : 1, \"Y4Y5_0\" : 0, \"Y4Y5_1\" : 1, \"Y4Y5_2\" : 0, \"Y4Y5_3\" : 0, \"Y4Y5_4\" : 0, \"Y4Y5_5\" : 0, \"Y4Y5_6\" : 0, \"Y4Y5_7\" : 0, \"SCC2DC\" : 0, \"PDIV4\" : 1, \"PDIV5\" : 1, \"PLL2_0N\" : 4, \"PLL2_0R\" : 0, \"PLL2_0Q\" : 16, \"PLL2_0P\" : 2, \"VCO2_0_RANGE\": 0, \"PLL2_1N\" : 4, \"PLL2_1R\" : 0, \"PLL2_1Q\" : 16, \"PLL2_1P\" : 2, \"VCO2_1_RANGE\": 0, \"SCC3_7\" : 0, \"SCC3_6\" : 0, \"SCC3_5\" : 0, \"SCC3_4\" : 0, \"SCC3_3\" : 0, \"SCC3_2\" : 0, \"SCC3_1\" : 0, \"SCC3_0\" : 0, \"FS3_0\" : 0, \"FS3_1\" : 0, \"FS3_2\" : 0, \"FS3_3\" : 0, \"FS3_4\" : 0, \"FS3_5\" : 0, \"FS3_6\" : 0, \"FS3_7\" : 0, \"MUX3\" : 1, \"M6\" : 1, \"M7\" : 2, \"Y6Y7_ST1\" : 3, \"Y6Y7_ST0\" : 1, \"Y6Y7_0\" : 0, \"Y6Y7_1\" : 1, \"Y6Y7_2\" : 0, \"Y6Y7_3\" : 0, \"Y6Y7_4\" : 0, \"Y6Y7_5\" : 0, \"Y6Y7_6\" : 0, \"Y6Y7_7\" : 0, \"SCC3DC\" : 0, \"PDIV6\" : 1, \"PDIV7\" : 1, \"PLL3_0N\" : 4, \"PLL3_0R\" : 0, \"PLL3_0Q\" : 16, \"PLL3_0P\" : 2, \"VCO3_0_RANGE\": 0, \"PLL3_1N\" : 4, \"PLL3_1R\" : 0, \"PLL3_1Q\" : 16, \"PLL3_1P\" : 2, \"VCO3_1_RANGE\": 0 }",
+  "FIN=2.700e+07 PLL1_0: N=0004 M=001 PDIV1=0001 FVCO=1.080e+08 FOUT=108000000"
+ ],
+ [
+  "{\"XCSEL\": 5}",
+  [
+   "./tests/k16_config",
+   "-j"
+  ],
+  "{ \"VID\" : 1, \"M1\" : 1, \"Y1_ST1\" : 3, \"Y1_ST0\" : 1, \"PDIV1\" : 1, \"Y1_1\" : 1, \"XCSEL\" : 5, \"BCOUNT\" : 80, \"MUX1\" : 1, \"M2\" : 1, \"M3\" : 2, \"Y2Y3_ST1\" : 3, \"Y2Y3_ST0\" : 1, \"Y2Y3_1\" : 1, \"PDIV2\" : 1, \"PDIV3\" : 1, \"PLL1_0N\" : 4, \"PLL1_0Q\" : 16, \"PLL1_0P\" : 2, \"PLL1_1N\" : 4, \"PLL1_1Q\" : 16, \"PLL1_1P\" : 2, \"MUX2\" : 1, \"M4\" : 1, \"M5\" : 2, \"Y4Y5_ST1\" : 3, \"Y4Y5_ST0\" : 1, \"Y4Y5_1\" : 1, \"PDIV4\" : 1, \"PDIV5\" : 1, \"PLL2_0N\" : 4, \"PLL2_0Q\" : 16, \"PLL2_0P\" : 2, \"PLL2_1N\" : 4, \"PLL2_1Q\" : 16, \"PLL2_1P\" : 2, \"MUX3\" : 1, \"M6\" : 1, \"M7\" : 2, \"Y6Y7_ST1\" : 3, \"Y6Y7_ST0\" : 1, \"Y6Y7_1\" : 1, \"PDIV6\" : 1, \"PDIV7\" : 1, \"PLL3_0N\" : 4, \"PLL3_0Q\" : 16, \"PLL3_0P\" : 2, \"PLL3_1N\" : 4, \"PLL3_1Q\" : 16, \"PLL3_1P\" : 2 }",
+  "FIN=2.700e+07 PLL1_0: N=0004 M=001 PDIV1=0001 FVCO=1.080e+08 FOUT=108000000"
+ ],
+ [
+  "{}",
+  [
+   "./tests/k16_config",
+   "-vw"
+  ],
+  "",
+  "Traceback (most recent call last): File \"./tests/k16_config\", line 10, in <module> sys.exit(k16()) File \"/usr/local/lib/python3.7/dist-packages/spukhafte/bin/config.py\", line 359, in k16 main(model='k16') File \"/usr/local/lib/python3.7/dist-packages/spukhafte/bin/config.py\", line 257, in main print_factors('FIN=', args.fin) File \"/usr/local/lib/python3.7/dist-packages/spukhafte/bin/config.py\", line 50, in print_factors modf, whole = utilities.math.modf(product) NameError: name 'utilities' is not defined"
+ ]
+]

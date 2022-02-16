@@ -6,7 +6,7 @@ __version__ = '0.0'
 __author__ = 'Fred Fierling'
 __copyright__ = 'Copyright 2019, Spukhafte Systems Limited'
 
-TEST_DATA_FILENAME = 'test/cdce9xx.csv'
+TEST_DATA_FILENAME = 'tests/cdce9xx.csv'
 NUM_TEST_VECTORS = 1024
 
 import unittest
@@ -16,8 +16,8 @@ from random import randrange
 from math import ceil
 #from datetime import datetime
 
-from cdce9xx import CDCE9xx, PLL
-from test.smbus import SMBus
+from spukhafte.cdce9xx import CDCE9xx, PLL
+from tests.smbus import SMBus
 
 class Test_find_n_m_pdiv(unittest.TestCase):
     def test_nm_0(self):
