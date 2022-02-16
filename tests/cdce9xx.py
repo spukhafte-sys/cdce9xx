@@ -2,9 +2,9 @@
 #
 # Unit tests for cdce9xx.py
 
-__version__ = '0.8.0'
+__version__ = '0.8.1'
 __author__ = 'Fred Fierling'
-__copyright__ = 'Copyright 2019, Spukhafte Systems Limited'
+__copyright__ = 'Copyright 2022, Spukhafte Systems Limited'
 
 TEST_DATA_FILENAME = 'tests/cdce9xx.csv'
 NUM_TEST_VECTORS = 1024
@@ -14,7 +14,6 @@ import csv
 
 from random import randrange
 from math import ceil
-#from datetime import datetime
 
 from spukhafte.cdce9xx import CDCE9xx, PLL
 from tests.smbus import SMBus

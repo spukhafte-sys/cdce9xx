@@ -10,9 +10,9 @@ import os
 import json
 import array
 
-__version__ = '0.8.0'
+__version__ = '0.8.1'
 __author__ = 'Fred Fierling'
-__copyright__ = 'Copyright 2019, Spukhafte Systems Limited'
+__copyright__ = 'Copyright 2022, Spukhafte Systems Limited'
 
 # Constants ====================
 

@@ -15,7 +15,7 @@ Requires:
 
 ## Installation
 ```bash
-pip3 install ti-cdce9xx
+pip3 install spukhafte-cdce9xx
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ cdce9xx
 ```
 or
 ```bash
-from cdce9xx import CDCE9XX
+from spukhafte.cdce9xx import CDCE9XX
 ```
 
 ## Contributing

@@ -2,9 +2,9 @@
 #
 # Unit tests for k15_config and k16_config
 
-__version__ = '0.8.0'
+__version__ = '0.8.1'
 __author__ = 'Fred Fierling'
-__copyright__ = 'Copyright 2019, Spukhafte Systems Limited'
+__copyright__ = 'Copyright 2022, Spukhafte Systems Limited'
 
 import unittest
 import json
@@ -13,7 +13,6 @@ from subprocess import Popen, PIPE
 
 from random import randrange
 from math import ceil
-#from datetime import datetime
 
 TEST_DATA_FILENAME = 'tests/.k1x_config.json'
 TEST_ENV = { 'PYTHONPATH': './tests' }  # Path that finds mock smbus first
