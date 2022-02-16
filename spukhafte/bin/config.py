@@ -8,7 +8,7 @@
    cdce9xx (>=0.1)
 """
 
-__version__ = '0.0'
+__version__ = '0.8.0'
 __author__ = 'Fred Fierling'
 __copyright__ = 'Copyright 2022 Spukhafte Systems Limited'
 
@@ -401,17 +401,17 @@ def main(device='_'):
     return(SUCCESS)
 
 def k15():
-    """Configure Spukhafte K15
+    """Configure Spukhafte K15 on I2C bus
     """
     main(device='ssl_k15')
 
 def k16():
-    """Configure Spukhafte K16
+    """Configure Spukhafte K16 on I2C bus
     """
     main(device='ssl_k16')
 
 def k25():
-    """Configure Spukhafte K25
+    """Configure Spukhafte K25 on function test interface
     """
     main(device='ssl_k25')
 

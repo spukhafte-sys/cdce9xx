@@ -2,7 +2,7 @@
 #
 # Unit tests for k15_config and k16_config
 
-__version__ = '0.0'
+__version__ = '0.8.0'
 __author__ = 'Fred Fierling'
 __copyright__ = 'Copyright 2019, Spukhafte Systems Limited'
 
