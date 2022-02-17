@@ -9,9 +9,9 @@ CDCE9xx family of programmable spread-spectrum clock generators on an I2C bus:
 
 ## Dependencies
 Requires:
-* Python>=3.7
-* smbus>=1.1
-* Adafruit-PlatformDetect>=3.19.3
+* Python >= 3.7
+* smbus >= 1.1
+* Adafruit-PlatformDetect >= 3.19.3
 
 ## Installation
 ```bash
@@ -19,10 +19,11 @@ pip3 install spukhafte-cdce9xx
 ```
 
 ## Usage
+Command line tool:
 ```bash
-cdce9xx
+cdce9xx -h
 ```
-or
+or in a Python3 program:
 ```bash
 from spukhafte.cdce9xx import CDCE9XX
 ```
@@ -31,7 +32,7 @@ from spukhafte.cdce9xx import CDCE9XX
 Pull requests are welcome. For major changes, please open an issue first to discuss
 what you would like to change.
 
-Please make sure to update tests as appropriate.
+Please update tests as appropriate.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)

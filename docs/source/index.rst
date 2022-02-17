@@ -7,6 +7,7 @@ Welcome to CDCE9xx's documentation!
 ===================================
 **CDCE9xx** is a Python3 command line tool and library for controlling any of the
 Texas Instruments CDCE9xx family of programmable spread-spectrum clock generators:
+
 * CDCE(L)913: 1 PLL, 3 Outputs
 * CDCE(L)925: 2 PLLs, 5 Outputs
 * CDCE(L)937: 3 PLLs, 7 Outputs

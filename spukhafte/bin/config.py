@@ -401,18 +401,15 @@ def main(device='_'):
     return(SUCCESS)
 
 def k15():
-    """Configure Spukhafte K15 on I2C bus
-    """
+    """Configure Spukhafte K15 on MIKROE-1857"""
     main(device='ssl_k15')
 
 def k16():
-    """Configure Spukhafte K16 on I2C bus
-    """
+    """Configure Spukhafte K16 on MIKROE-1857"""
     main(device='ssl_k16')
 
 def k25():
-    """Configure Spukhafte K25 on function test interface
-    """
+    """Configure Spukhafte K25 on SSL functional test interface"""
     main(device='ssl_k25')
 
 if __name__ == "__main__":
