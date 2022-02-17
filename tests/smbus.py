@@ -10,7 +10,7 @@ import os
 import json
 import array
 
-__version__ = '0.8.1'
+__version__ = '0.8.2'
 __author__ = 'Fred Fierling'
 __copyright__ = 'Copyright 2022, Spukhafte Systems Limited'
 
@@ -31,7 +31,7 @@ class Spec:
     __repr__ = __str__
 
 class CDCE9xx():
-    FNAME_FORMAT = '.cdce9%d%d_0.json'  # TODO separate state file for each address?
+    FNAME_FORMAT = 'tests/data/.cdce9%d%d_0.json'  # TODO separate state file for each address?
 
     BYTE_XFR = 0x80
     BASE_ADDR = 0x64

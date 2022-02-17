@@ -37,7 +37,7 @@ setup(
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/guides/single-sourcing-package-version/
-    version='0.8.1',  # Required
+    version='0.8.2',  # Required
 
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
@@ -181,7 +181,7 @@ setup(
     # executes the function `main` from this package when invoked:
     entry_points={  # Optional
         'console_scripts': [
-            'cdce9xx=spukhafte.cli.config:main',
+            'cdce9xx=spukhafte.bin.config:main',
             'k15_config=spukhafte.bin.config:k15',
             'k16_config=spukhafte.bin.config:k16',
             'k25_config=spukhafte.bin.config:k25',

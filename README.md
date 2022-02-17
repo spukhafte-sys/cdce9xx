@@ -7,6 +7,14 @@ CDCE9xx family of programmable spread-spectrum clock generators on an I2C bus:
 * CDCE937/CDCEL937: 3 PLLs, 7 Outputs
 * CDCE949/CDCEL949: 4 PLLs, 9 Outputs
 
+## Features and Benefits
+* One class instatiates objects for entire family of devices
+* Calculates PLL and PDIV configurations given input and desired output frequencies
+* Excludes PLL configurations with VCO harmonics in sensitive bands (like GPS)
+* Configure individual registers by name
+* Export and import configurations in JSON format
+* Detects platform and uses appropriate I2C bus
+
 ## Dependencies
 Requires:
 * Python >= 3.7

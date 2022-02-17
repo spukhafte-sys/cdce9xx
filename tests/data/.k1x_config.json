@@ -69,8 +69,8 @@
    "./tests/k15_config",
    "-v"
   ],
-  "",
-  "Traceback (most recent call last): File \"./tests/k15_config\", line 10, in <module> sys.exit(k15()) File \"/usr/local/lib/python3.7/dist-packages/spukhafte/bin/config.py\", line 356, in k15 main(model='k15') File \"/usr/local/lib/python3.7/dist-packages/spukhafte/bin/config.py\", line 257, in main print_factors('FIN=', args.fin) File \"/usr/local/lib/python3.7/dist-packages/spukhafte/bin/config.py\", line 50, in print_factors modf, whole = utilities.math.modf(product) NameError: name 'utilities' is not defined"
+  "HW=BEAGLEBONE_AI",
+  "FIN=2^14*3*5^4 FIN=3.072e+07 PLL1_0: N=0004 M=001 PDIV1=0001 FVCO=1.229e+08 FOUT=122880000"
  ],
  [
   "{}",
@@ -99,8 +99,8 @@
    "./tests/k15_config",
    "-vw"
   ],
-  "",
-  "Traceback (most recent call last): File \"./tests/k15_config\", line 10, in <module> sys.exit(k15()) File \"/usr/local/lib/python3.7/dist-packages/spukhafte/bin/config.py\", line 356, in k15 main(model='k15') File \"/usr/local/lib/python3.7/dist-packages/spukhafte/bin/config.py\", line 257, in main print_factors('FIN=', args.fin) File \"/usr/local/lib/python3.7/dist-packages/spukhafte/bin/config.py\", line 50, in print_factors modf, whole = utilities.math.modf(product) NameError: name 'utilities' is not defined"
+  "HW=BEAGLEBONE_AI",
+  "FIN=2^14*3*5^4 FIN=3.072e+07 PLL1_0: N=0004 M=001 PDIV1=0001 FVCO=1.229e+08 FOUT=122880000 EEPIPs=4"
  ],
  [
   "{}",
@@ -153,7 +153,7 @@
    "./tests/k16_config",
    "-vw"
   ],
-  "",
-  "Traceback (most recent call last): File \"./tests/k16_config\", line 10, in <module> sys.exit(k16()) File \"/usr/local/lib/python3.7/dist-packages/spukhafte/bin/config.py\", line 359, in k16 main(model='k16') File \"/usr/local/lib/python3.7/dist-packages/spukhafte/bin/config.py\", line 257, in main print_factors('FIN=', args.fin) File \"/usr/local/lib/python3.7/dist-packages/spukhafte/bin/config.py\", line 50, in print_factors modf, whole = utilities.math.modf(product) NameError: name 'utilities' is not defined"
+  "HW=BEAGLEBONE_AI",
+  "FIN=2^6*3^3*5^6 FIN=2.700e+07 PLL1_0: N=0004 M=001 PDIV1=0001 FVCO=1.080e+08 FOUT=108000000 EEPIPs=4"
  ]
 ]

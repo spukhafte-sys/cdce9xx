@@ -8,7 +8,7 @@
    cdce9xx (>=0.1)
 """
 
-__version__ = '0.8.0'
+__version__ = '0.8.2'
 __author__ = 'Fred Fierling'
 __copyright__ = 'Copyright 2022 Spukhafte Systems Limited'
 

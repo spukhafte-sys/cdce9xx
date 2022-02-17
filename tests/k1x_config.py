@@ -2,7 +2,7 @@
 #
 # Unit tests for k15_config and k16_config
 
-__version__ = '0.8.1'
+__version__ = '0.8.2'
 __author__ = 'Fred Fierling'
 __copyright__ = 'Copyright 2022, Spukhafte Systems Limited'
 
@@ -14,10 +14,10 @@ from subprocess import Popen, PIPE
 from random import randrange
 from math import ceil
 
-TEST_DATA_FILENAME = 'tests/.k1x_config.json'
+TEST_DATA_FILENAME = 'tests/data/k1x_config.json'
 TEST_ENV = { 'PYTHONPATH': './tests' }  # Path that finds mock smbus first
-K15_CMD = './tests/k15_config'
-K16_CMD = './tests/k16_config'
+K15_CMD = 'tests/k15_config'
+K16_CMD = 'tests/k16_config'
 
 STIMULI = [
           # [stdin, [cmd, *opts, ]] ; stdin is null JSON because test env doesn't look like a tty

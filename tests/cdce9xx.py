@@ -2,11 +2,11 @@
 #
 # Unit tests for cdce9xx.py
 
-__version__ = '0.8.1'
+__version__ = '0.8.2'
 __author__ = 'Fred Fierling'
 __copyright__ = 'Copyright 2022, Spukhafte Systems Limited'
 
-TEST_DATA_FILENAME = 'tests/cdce9xx.csv'
+TEST_DATA_FILENAME = 'tests/data/cdce9xx.csv'
 NUM_TEST_VECTORS = 1024
 
 import unittest
@@ -19,31 +19,6 @@ from spukhafte.cdce9xx import CDCE9xx, PLL
 from tests.smbus import SMBus
 
 class Test_find_n_m_pdiv(unittest.TestCase):
-    def test_nm_0(self):
-        self.assertEqual(PLL.find_n_m_pdiv(30.72e6, 10e6, PLL.MAX_PDIV1),
-                        (2875, 384, 23, 230000000, 0))
-
-    def test_find_n_m_pdiv_check_data(self):
-        import pdb; pdb.set_trace
-        f = open(TEST_DATA_FILENAME, 'r')
-
-        with f:
-            i = 0
-            data = csv.reader(f)
-
-            for fin, fout, n, m, pdiv, fvco, error in data:
-                i += 1
-                fin = float(fin)
-                fout = float(fout)
-                fvco = float(fvco)
-                vector = (int(n), int(m), int(pdiv), float(fvco), float(error))
-
-                self.assertEqual(PLL.find_n_m_pdiv(fin, fout, PLL.MAX_PDIV1), vector)
-
-            print('Processed %d vectors' % i)
-
-            f.close()
-
     @unittest.skip("Only use this test to generate test data")
     def test_gen_data_find_n_m_pdiv(self):
         f = open(TEST_DATA_FILENAME, 'w')
@@ -78,3 +53,29 @@ class Test_find_n_m_pdiv(unittest.TestCase):
 
         with f:
             data = csv.writer(f)
+
+    def test_nm_0(self):
+        self.assertEqual(PLL.find_n_m_pdiv(30.72e6, 10e6, PLL.MAX_PDIV1),
+                        (2875, 384, 23, 230000000, 0))
+
+    def test_find_n_m_pdiv_check_data(self):
+        import pdb; pdb.set_trace
+        f = open(TEST_DATA_FILENAME, 'r')
+
+        with f:
+            i = 0
+            data = csv.reader(f)
+
+            for fin, fout, n, m, pdiv, fvco, error in data:
+                i += 1
+                fin = float(fin)
+                fout = float(fout)
+                fvco = float(fvco)
+                vector = (int(n), int(m), int(pdiv), float(fvco), float(error))
+
+                self.assertEqual(PLL.find_n_m_pdiv(fin, fout, PLL.MAX_PDIV1), vector)
+
+            print('\nProcessed %d vectors' % i)
+
+            f.close()
+
