@@ -8,7 +8,7 @@
    cdce9xx (>=0.1)
 """
 
-__version__ = '0.8.2'
+__version__ = '0.8.3'
 __author__ = 'Fred Fierling'
 __copyright__ = 'Copyright 2022 Spukhafte Systems Limited'
 
@@ -123,7 +123,7 @@ def print_factors(prefix, product):
 
     print(out, file=sys.stderr)
 
-def main(device='_'):
+def main(device='ti_cdce9xx'):
     """Command line tool for configuring clock generators connected to local system on an I2C bus.
     """
 
@@ -141,12 +141,10 @@ def main(device='_'):
             )  # TODO check for R2 board
 
             EXCLUDE = GPS_BANDS
-            N_PLLS = 1
-           #DEF_PDIV_MAP = (1, 3)
-           #VALID_PDIVS = (1, 2)  # R1: Y3 connects to a test point
-            VALID_PLLS = (0, 1)
-            DEF_PDIV_MAP = (1, 1)
-            VALID_PDIVS = (1, 3)  # R2: Y2 connects to a test point
+            DEF_N_PLLS = 1
+            VALID_PLLS = (0, 1)  # Zero means null pll
+            VALID_PDIVS = (1, 3)  # >=R2: Y2 connects to a test point
+            PLL_LU = (1, 1)
 
         else: 
             DEF_FIN = 27e6  # XTAL
@@ -158,25 +156,25 @@ def main(device='_'):
                     )
 
             EXCLUDE = ()
-            N_PLLS = 3
-           #DEF_PDIV_MAP = (1, 1, 4) # R1
-           #VALID_PDIVS = (1, 2, 4)  # R1: Y3, Y5 connect to test points
+            DEF_N_PLLS = 3
             VALID_PLLS = (0, 1, 2, 3)  # Zero means null pll
-            DEF_PDIV_MAP = (1, 1, 5, 7)
             VALID_PDIVS = (1, 3, 4, 5, 7)  # R2: Y2, Y6 connect to test points
+            PLL_LU = (1, 1, 5, 7)
     else:
+        # Assume a CDCE(L)949
         DEF_FIN = 27e6  # XTAL
         DEF_CONFIG = (
             ("PDIV1", 0), # Reset and stand-by
             ("PDIV2", 0), # Reset and stand-by
             ("PDIV3", 0), # Reset and stand-by
+            ("PDIV4", 0), # Reset and stand-by
         )  #
 
         EXCLUDE = ()
-        N_PLLS = 1
-        VALID_PLLS = (0, 1, 2)
-        DEF_PDIV_MAP = (1, 1, 1)
+        DEF_N_PLLS = 4
+        VALID_PLLS = (0, 1, 2, 3, 4)  # Zero means null pll
         VALID_PDIVS = (1, 2, 3)  # R2: Y2 connects to a test point
+        PLL_LU = (1, 1, 1, 2, 2, 3, 3, 4, 4)
 
     # Detect system hardware and software
     HW = Detector()
@@ -194,6 +192,7 @@ def main(device='_'):
         VALID_BUSES = (0,1,2)
         DEF_BUS = 0
 
+    # Process environment variables
     ENV_PREFIX = vendor + '_' + model
 
     var = ENV_PREFIX + '_BUS'
@@ -204,15 +203,18 @@ def main(device='_'):
     if var in os.environ:
         DEF_ADDR = auto_int(os.environ[var])
     else:
-        DEF_ADDR = CDCE9xx.def_addr(N_PLLS)
+        DEF_ADDR = CDCE9xx.def_addr(DEF_N_PLLS)
 
     var = ENV_PREFIX + '_FIN'
     if var in os.environ:
         DEF_FIN = float(os.environ[var])
 
+    var = ENV_PREFIX + '_S'
+    DEF_S = auto_int (os.environ[var]) if var in os.environ else 0
+
     # Parse arguments
     parser = argparse.ArgumentParser(
-        description=("configure %s's PLL" % model),
+        description=("configure %s clock generator" % model),
         epilog='no arguments: list PLL1 configuration')
 
     group = parser.add_mutually_exclusive_group()
@@ -231,7 +233,7 @@ def main(device='_'):
     # Optional arguments
     parser.add_argument('-a', dest='addr', type=auto_int, default=DEF_ADDR,
         help="I2C address of CDCE9%d%d (default=0x%x)"
-              % (N_PLLS, (1 + 2 * N_PLLS), DEF_ADDR))
+              % (DEF_N_PLLS, (1 + 2 * DEF_N_PLLS), DEF_ADDR))
 
     parser.add_argument('-b', dest='bus', type=int, choices=VALID_BUSES,
         default=DEF_BUS,
@@ -258,16 +260,20 @@ def main(device='_'):
     parser.add_argument('-k', dest='pdiv10', action="store_true", default=False,
         help="solve for a ten bit divider")
 
+    parser.add_argument('-n', type=int, default=DEF_N_PLLS,
+        metavar=('PLLs'),
+        help="number of PLLs (default=%d)" % (DEF_N_PLLS))
+
     parser.add_argument('-p', type=int, default=CDCE9xx.DEF_PLL,
         choices=VALID_PLLS,
        #metavar=('PLL'),
         help="target PLL index (default=%d, 0: null device)" % CDCE9xx.DEF_PLL)
 
     parser.add_argument('-r', action="store_true", 
-        help="reset to factory default")
+        help="factory default reset")
 
-    parser.add_argument('-s', type=int, default=0, choices=(0, 1),
-        help="target PLL state, (default=%(default)s)")
+    parser.add_argument('-s', type=int, default=DEF_S, choices=(0, 1),
+        help="target state, (default=%(default)s)")
 
     parser.add_argument('-w', action="store_true", help="write EEPROM")
     parser.add_argument('-v', default=0, action="count", help="verbosity level")
@@ -288,7 +294,7 @@ def main(device='_'):
 
     # Set target divider of PLL
     if args.d is None:
-        args.d = DEF_PDIV_MAP[args.p]
+        args.d = PLL_LU[args.p]
 
     # Check size of divider
     if args.pdiv10:
@@ -314,7 +320,7 @@ def main(device='_'):
     i2c = SMBus(args.bus)
     i2c.open(args.bus)
 
-    clock_gen = CDCE9xx(N_PLLS, i2c, args.addr)
+    clock_gen = CDCE9xx(args.n, i2c, args.addr)
 
     if args.r:
         # Set all fields to factory defaults

@@ -11,7 +11,7 @@ CDCE9xx family of programmable spread-spectrum clock generators on an I2C bus:
 * One class instatiates objects for entire family of devices
 * Calculates PLL and PDIV configurations given input and desired output frequencies
 * Excludes PLL configurations with VCO harmonics in sensitive bands (like GPS)
-* Configure individual registers by name
+* Read and write individual registers by name
 * Export and import configurations in JSON format
 * Detects platform and uses appropriate I2C bus
 
