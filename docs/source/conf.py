@@ -22,7 +22,7 @@ copyright = '2022, Fred Fierling'
 author = 'Fred Fierling'
 
 # The full version, including alpha/beta/rc tags
-release = '0.8.3'
+release = '0.9.0'
 
 
 # -- General configuration ---------------------------------------------------

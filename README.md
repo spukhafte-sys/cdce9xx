@@ -33,7 +33,7 @@ cdce9xx -h
 ```
 or in a Python3 program:
 ```bash
-from spukhafte.cdce9xx import CDCE9XX
+from spukhafte.cdce9xx import CDCE9xx
 ```
 
 ## Contributing
