@@ -8,7 +8,7 @@
    cdce9xx (>=0.1)
 """
 
-__version__ = '0.9.0'
+__version__ = '0.9.1'
 __author__ = 'Fred Fierling'
 __copyright__ = 'Copyright 2022 Spukhafte Systems Limited'
 
@@ -179,15 +179,16 @@ def main(device='ti_cdce9xx'):
     # Detect system hardware and software
     HW = Detector()
 
-    if HW.board.id == 'BEAGLEBONE_BLACK':
-        VALID_BUSES = (0,1,2)
-        DEF_BUS = 1 if model == 'K25' else 2
-    elif HW.board.id.startswith('RASPBERRY_PI'):
-        VALID_BUSES = (1,2)
-        DEF_BUS = 1
+    if (HW.board.id == 'BEAGLEBONE_BLACK' or HW.board.id == 'BEAGLEBONE_GREEN'
+        or HW.board.id == 'BEAGLEBONE_ENHANCED'):
+            VALID_BUSES = (0,1,2)
+            DEF_BUS = 1 if model == 'K25' else 2
     elif HW.board.id == 'BEAGLEBONE_AI':
         VALID_BUSES = (0,3)
         DEF_BUS = 3
+    elif HW.board.id.startswith('RASPBERRY_PI'):
+        VALID_BUSES = (1,2)
+        DEF_BUS = 1
     else:
         VALID_BUSES = (0,1,2)
         DEF_BUS = 0
